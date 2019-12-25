@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/overlay"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:layout_width="200px"
+        android:layout_height="200px"
+        android:src="@drawable/corner_left_top"
+        android:layout_gravity="left|top"
+        tools:ignore="PxUsage,RtlHardcoded" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:layout_width="200px"
+        android:layout_height="200px"
+        android:src="@drawable/corner_left_top"
+        android:rotation="90"
+        android:layout_gravity="right|top"
+        tools:ignore="PxUsage,RtlHardcoded" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:layout_width="200px"
+        android:layout_height="200px"
+        android:src="@drawable/corner_left_top"
+        android:rotation="270"
+        android:layout_gravity="left|bottom"
+        tools:ignore="PxUsage,RtlHardcoded" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:layout_width="200px"
+        android:layout_height="200px"
+        android:src="@drawable/corner_left_top"
+        android:rotation="180"
+        android:layout_gravity="right|bottom"
+        tools:ignore="PxUsage,RtlHardcoded" />
+
+</FrameLayout>

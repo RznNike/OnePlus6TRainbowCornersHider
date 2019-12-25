@@ -1,0 +1,106 @@
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
+
+ext {
+    APK_NAME = 'OnePlus 6T Rainbow Corners Hider'
+}
+
+android {
+    compileSdkVersion 29
+
+    defaultConfig {
+        minSdkVersion 28
+        targetSdkVersion 29
+        applicationId 'ru.rznnike.fajita.cornersoverlay'
+        versionCode 1
+        versionName '0.1.0'
+        vectorDrawables.useSupportLibrary = true
+    }
+    signingConfigs {
+        config {
+            storeFile file('../fajita_cornersoverlay.jks')
+            keyAlias 'fajita_cornersoverlay'
+            if (project.hasProperty('PROJECT_KEY_PASSWORD') && project.hasProperty('PROJECT_KEYSTORE_PASSWORD')) {
+                keyPassword PROJECT_KEY_PASSWORD
+                storePassword PROJECT_KEYSTORE_PASSWORD
+            } else {
+                throw new FileNotFoundException('Not found signing config password properties')
+            }
+        }
+    }
+    buildTypes {
+        debug {
+            signingConfig signingConfigs.config
+        }
+        staging {
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.config
+        }
+        release {
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.config
+        }
+    }
+    buildToolsVersion '29.0.2'
+    applicationVariants.all { variant ->
+        variant.outputs.all {
+            outputFileName = "${APK_NAME}_${variant.versionName}(${variant.versionCode})_${variant.name}.apk"
+        }
+    }
+    lintOptions {
+        abortOnError true
+        checkAllWarnings true
+        ignoreWarnings false
+        warningsAsErrors false
+        checkDependencies true
+        htmlReport true
+        explainIssues true
+        noLines false
+        textOutput 'stdout'
+    }
+    androidExtensions {
+        experimental = true
+    }
+    afterEvaluate {
+        applicationVariants.all {
+            variant ->
+                def variantName = variant.name.capitalize()
+                if (variantName != 'Debug') {
+                    project.tasks["compile${variantName}Sources"].dependsOn(project.tasks["lint${variantName}"])
+                }
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+}
+
+dependencies {
+    // AndroidX
+    implementation 'androidx.appcompat:appcompat:1.1.0'
+    implementation 'androidx.lifecycle:lifecycle-extensions:2.1.0'
+    implementation 'androidx.preference:preference-ktx:1.1.0'
+    implementation 'androidx.core:core-ktx:1.1.0'
+    // Material
+    implementation 'com.google.android.material:material:1.2.0-alpha03'
+    // Moxy
+    def moxyVersion = '1.5.6'
+    implementation "com.arello-mobile:moxy:${moxyVersion}"
+    kapt "com.arello-mobile:moxy-compiler:${moxyVersion}"
+    // Cicerone
+    implementation 'ru.terrakok.cicerone:cicerone:5.0.0'
+    // Flashbar
+    implementation 'com.andrognito.flashbar:flashbar:1.0.3'
+    // Rx
+    implementation 'io.reactivex.rxjava2:rxandroid:2.1.1'
+    implementation 'io.reactivex.rxjava2:rxkotlin:2.4.0'
+    implementation 'com.jakewharton.rxrelay2:rxrelay:2.1.1'
+    implementation 'com.f2prateek.rx.preferences2:rx-preferences:2.0.0'
+    // Koin
+    implementation 'org.koin:koin-androidx-scope:2.0.1'
+}

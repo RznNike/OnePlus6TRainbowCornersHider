@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">OnePlus 6T Rainbow Corners Hider</string>
+    <string name="double_back_to_exit">Нажмите еще раз для выхода</string>
+    <string name="share">Поделиться</string>
+    <string name="version">Версия</string>
+    <string name="overlay_permission_denied_message">Приложению требуется разрешение на показ оверлея чтобы наложить черную рамку поверх радужных пикселей по углам.</string>
+    <string name="settings">Настройки</string>
+    <string name="hide_rainbow_pixels">Скрыть радужные пиксели</string>
+</resources>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="baseline_grid_tiny">4dp</dimen>
+    <dimen name="baseline_grid_small">8dp</dimen>
+    <dimen name="baseline_grid_medium">12dp</dimen>
+    <dimen name="baseline_grid">16dp</dimen>
+    <dimen name="baseline_grid_big">32dp</dimen>
+    <dimen name="baseline_grid_large">64dp</dimen>
+    <dimen name="bottom_button_size">64dp</dimen>
+    <dimen name="edit_text_grid_big">28dp</dimen>
+    <dimen name="edit_text_icon_padding">12dp</dimen>
+    <dimen name="material_drawer_item_background_padding_top_bottom">0dp</dimen>
+    <dimen name="material_drawer_item_corner_radius">0dp</dimen>
+    <dimen name="material_drawer_item_background_padding_start_end">0dp</dimen>
+    <dimen name="slider_panel_elevation">1dp</dimen>
+    <dimen name="bottom_navigation_height">56dp</dimen>
+    <dimen name="_1dp">1dp</dimen>
+    <dimen name="_6dp">6dp</dimen>
+</resources>

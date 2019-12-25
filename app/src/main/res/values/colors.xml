@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#002534</color>
+    <color name="colorPrimaryDark">#002534</color>
+    <color name="colorAccent">#002534</color>
+
+    <color name="colorText">#002534</color>
+    <color name="colorTextWhite">#FFFFFF</color>
+    <color name="colorBackground">#FFFFFF</color>
+    <color name="colorBackgroundGray">#f7f8f9</color>
+    <color name="colorBackgroundDark">#002534</color>
+    <color name="colorBackgroundSnackbar">#CCD3D6</color>
+    <color name="colorTransparent">#00FFFFFF</color>
+    <color name="colorWhite">#FFFFFF</color>
+    <color name="colorBlack">#000000</color>
+    <color name="colorRed">#FF414D</color>
+    <color name="colorOrange">#F6A331</color>
+    <color name="colorBlue">#2618FB</color>
+
+    <color name="ic_launcher_background">#FFFFFF</color>
+</resources>
