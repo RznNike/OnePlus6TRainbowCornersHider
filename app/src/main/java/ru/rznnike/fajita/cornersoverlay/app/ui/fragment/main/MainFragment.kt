@@ -3,6 +3,7 @@ package ru.rznnike.fajita.cornersoverlay.app.ui.fragment.main
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.os.Parcelable
 import android.provider.Settings
 import android.view.View
 import androidx.core.os.bundleOf
@@ -70,15 +71,18 @@ class MainFragment : BaseFragment(), MainView {
         textViewCurrentSolutionType.setText(solutionType.nameResId)
 
         if (overlayEnabled) {
-            checkOverlayPermission()
+            checkOverlayPermission(debugMode, solutionType)
         } else {
-            sendCommandToOverlayService(false)
+            sendCommandToOverlayService(overlayEnabled, debugMode, solutionType)
         }
     }
 
-    private fun checkOverlayPermission() {
+    private fun checkOverlayPermission(
+        debugMode: Boolean,
+        solutionType: SolutionType
+    ) {
         if (Settings.canDrawOverlays(requireContext())) {
-            sendCommandToOverlayService(true)
+            sendCommandToOverlayService(true, debugMode, solutionType)
         } else {
             requestOverlayPermission()
         }
@@ -107,9 +111,15 @@ class MainFragment : BaseFragment(), MainView {
         }
     }
 
-    private fun sendCommandToOverlayService(overlayEnabled: Boolean) {
+    private fun sendCommandToOverlayService(
+        overlayEnabled: Boolean,
+        debugMode: Boolean,
+        solutionType: SolutionType
+    ) {
         val intent = Intent(requireContext(), OverlayService::class.java)
         intent.putExtra(OverlayService.PARAM_ENABLE_OVERLAY, overlayEnabled)
+        intent.putExtra(OverlayService.PARAM_DEBUG_MODE, debugMode)
+        intent.putExtra(OverlayService.PARAM_SOLUTION_TYPE, solutionType as Parcelable)
         requireContext().startService(intent)
     }
 

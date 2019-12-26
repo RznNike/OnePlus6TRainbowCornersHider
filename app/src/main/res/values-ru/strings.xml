@@ -12,4 +12,6 @@
     <string name="solution_system">Система</string>
     <string name="solution_accessibility">Спец. возможности</string>
     <string name="debug_mode">Режим отладки</string>
+    <string name="error_unknown">Неизвестная ошибка</string>
+    <string name="error_app_not_system">Приложение не сделано системным и не имеет разрешения на этот режим</string>
 </resources>

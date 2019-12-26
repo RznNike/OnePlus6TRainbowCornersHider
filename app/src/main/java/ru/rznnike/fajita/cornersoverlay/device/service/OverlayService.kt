@@ -8,14 +8,22 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.PixelFormat
 import android.os.Binder
+import android.os.Handler
 import android.os.IBinder
 import android.view.View
 import android.view.WindowManager
+import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
+import org.koin.android.ext.android.inject
 import ru.rznnike.fajita.cornersoverlay.R
+import ru.rznnike.fajita.cornersoverlay.app.global.notifier.Notifier
+import ru.rznnike.fajita.cornersoverlay.domain.model.SolutionType
+import java.lang.Exception
 
 class OverlayService : Service() {
+    private val notifier: Notifier by inject()
+
     private val binder = LocalBinder()
     private var overlayView: View? = null
 
@@ -30,8 +38,11 @@ class OverlayService : Service() {
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         val enableOverlay = intent?.getBooleanExtra(PARAM_ENABLE_OVERLAY, false) ?: false
+        val debugMode = intent?.getBooleanExtra(PARAM_DEBUG_MODE, false) ?: false
+        val solutionType = intent?.getParcelableExtra(PARAM_SOLUTION_TYPE) as? SolutionType ?: SolutionType.APPLICATION
+
         if (enableOverlay) {
-            showOverlay()
+            showOverlay(debugMode, solutionType)
         } else {
             stopService()
         }
@@ -39,30 +50,56 @@ class OverlayService : Service() {
         return START_NOT_STICKY
     }
 
-    private fun showOverlay() {
+    private fun showOverlay(
+        debugMode: Boolean,
+        solutionType: SolutionType
+    ) {
         buildNotification()
 
         val windowManager = getSystemService(Context.WINDOW_SERVICE) as WindowManager
-//        val metrics = DisplayMetrics()
-//        windowManager.defaultDisplay.getMetrics(metrics)
 
         overlayView?.let {
             windowManager.removeView(overlayView)
             overlayView = null
         }
 
-        val params = WindowManager.LayoutParams(
-            WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
-            WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
+        val params = WindowManager.LayoutParams().apply {
+            @Suppress("DEPRECATION")
+            type = if (solutionType == SolutionType.SYSTEM) {
+                WindowManager.LayoutParams.TYPE_SYSTEM_OVERLAY
+            } else {
+                WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY
+            }
+            flags = (WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
                     or WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
-                    or WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN,
-            PixelFormat.TRANSLUCENT
-        )
-        params.layoutInDisplayCutoutMode = WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES
+                    or WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN)
+            format = PixelFormat.TRANSLUCENT
+            layoutInDisplayCutoutMode = WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES
+        }
 
         overlayView = View.inflate(this, R.layout.overlay, null)
+        val cornerViews = listOf(
+            overlayView?.findViewById<AppCompatImageView>(R.id.imageViewLeftTopCorner),
+            overlayView?.findViewById<AppCompatImageView>(R.id.imageViewRightTopCorner),
+            overlayView?.findViewById<AppCompatImageView>(R.id.imageViewLeftBottomCorner),
+            overlayView?.findViewById<AppCompatImageView>(R.id.imageViewRightBottomCorner)
+        )
+        val imageRes = if (debugMode) R.drawable.corner_left_top_debug else R.drawable.corner_left_top
+        cornerViews.forEach {
+            it?.setImageResource(imageRes)
+        }
 
-        windowManager.addView(overlayView, params)
+        try {
+            windowManager.addView(overlayView, params)
+        } catch (e: Exception) {
+            if (solutionType == SolutionType.SYSTEM) {
+                notifier.sendMessage(R.string.error_app_not_system)
+            } else {
+                notifier.sendMessage(R.string.error_unknown)
+            }
+
+            Handler().postDelayed(::stopService, 1000)
+        }
     }
 
     override fun onDestroy() {
@@ -128,6 +165,8 @@ class OverlayService : Service() {
 
     companion object {
         const val PARAM_ENABLE_OVERLAY = "PARAM_ENABLE_OVERLAY"
+        const val PARAM_DEBUG_MODE = "PARAM_DEBUG_MODE"
+        const val PARAM_SOLUTION_TYPE = "PARAM_SOLUTION_TYPE"
 
         private const val NOTIFICATION_ID = 101
         private const val NOTIFICATION_CHANNEL_ID = "6TCornersOverlay"
