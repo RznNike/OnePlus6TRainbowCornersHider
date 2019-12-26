@@ -1,9 +1,6 @@
 package ru.rznnike.fajita.cornersoverlay.device.service
 
-import android.app.Notification
-import android.app.NotificationChannel
-import android.app.NotificationManager
-import android.app.Service
+import android.app.*
 import android.content.Context
 import android.content.Intent
 import android.graphics.PixelFormat
@@ -18,6 +15,8 @@ import androidx.core.content.ContextCompat
 import org.koin.android.ext.android.inject
 import ru.rznnike.fajita.cornersoverlay.R
 import ru.rznnike.fajita.cornersoverlay.app.global.notifier.Notifier
+import ru.rznnike.fajita.cornersoverlay.app.ui.AppActivity
+
 
 class OverlayService : Service() {
     private val notifier: Notifier by inject()
@@ -102,6 +101,9 @@ class OverlayService : Service() {
     }
 
     private fun buildNotification() {
+        val notificationIntent = Intent(this, AppActivity::class.java)
+        val intent = PendingIntent.getActivity(this, 0, notificationIntent, 0)
+
         val manager = getNotificationManager(this)
         val channelId = getChannelId(manager)
 
@@ -110,7 +112,8 @@ class OverlayService : Service() {
             .setPriority(NotificationCompat.PRIORITY_MIN)
             .setColor(ContextCompat.getColor(this, R.color.colorAccent))
             .setSmallIcon(R.drawable.ic_notification)
-            .setContentTitle(baseContext.getString(R.string.app_name))
+            .setContentTitle(getString(R.string.notification_title))
+            .addAction(R.drawable.ic_open_app, getString(R.string.notification_settings), intent)
 
         startForeground(NOTIFICATION_ID, notificationBuilder.build())
     }

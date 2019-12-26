@@ -13,4 +13,6 @@
     <string name="debug_mode">Режим отладки</string>
     <string name="error_unknown">Неизвестная ошибка</string>
     <string name="error_app_not_system">Приложение не сделано системным и не имеет разрешения на этот режим</string>
+    <string name="notification_title">Сервис оверлея</string>
+    <string name="notification_settings">ОТКРЫТЬ НАСТРОЙКИ</string>
 </resources>
