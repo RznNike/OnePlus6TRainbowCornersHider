@@ -11,4 +11,5 @@
     <string name="solution_application">Application</string>
     <string name="solution_system">System</string>
     <string name="solution_accessibility">Accessibility</string>
+    <string name="debug_mode">Debug mode</string>
 </resources>

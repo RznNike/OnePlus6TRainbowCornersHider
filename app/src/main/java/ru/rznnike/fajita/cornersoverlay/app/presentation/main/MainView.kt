@@ -7,5 +7,9 @@ import ru.rznnike.fajita.cornersoverlay.domain.model.SolutionType
 
 interface MainView : MvpView {
     @StateStrategyType(AddToEndSingleStrategy::class)
-    fun populateData(overlayEnabled: Boolean, solutionType: SolutionType)
+    fun populateData(
+        overlayEnabled: Boolean,
+        debugMode: Boolean,
+        solutionType: SolutionType
+    )
 }

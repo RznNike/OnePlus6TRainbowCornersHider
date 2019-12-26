@@ -17,8 +17,13 @@ class MainPresenter : BasePresenter<MainView>() {
     private fun populateData() {
         viewState.populateData(
             preferences.getOverlayEnabledPreference().get(),
+            preferences.getDebugModePreference().get(),
             preferences.getSolutionTypePreference().get()
         )
+    }
+
+    fun getCurrentSolutionType(): SolutionType {
+        return preferences.getSolutionTypePreference().get()
     }
 
     fun onSwitchEnableOverlay(checked: Boolean) {
@@ -26,8 +31,9 @@ class MainPresenter : BasePresenter<MainView>() {
         populateData()
     }
 
-    fun getCurrentSolutionType(): SolutionType {
-        return preferences.getSolutionTypePreference().get()
+    fun onSwitchDebugMode(checked: Boolean) {
+        preferences.getDebugModePreference().set(checked)
+        populateData()
     }
 
     fun onSolutionTypeValueChanged(type: SolutionType) {

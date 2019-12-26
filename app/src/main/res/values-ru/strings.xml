@@ -11,4 +11,5 @@
     <string name="solution_application">Приложение</string>
     <string name="solution_system">Система</string>
     <string name="solution_accessibility">Спец. возможности</string>
+    <string name="debug_mode">Режим отладки</string>
 </resources>

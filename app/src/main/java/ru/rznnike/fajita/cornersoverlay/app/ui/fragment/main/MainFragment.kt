@@ -42,6 +42,9 @@ class MainFragment : BaseFragment(), MainView {
         switchEnableOverlay.setOnClickListener {
             presenter.onSwitchEnableOverlay(switchEnableOverlay.isChecked)
         }
+        switchDebugMode.setOnClickListener {
+            presenter.onSwitchDebugMode(switchDebugMode.isChecked)
+        }
         buttonSolutionType.setOnClickListener {
             showSolutionTypeSelectionBottomDialog()
         }
@@ -57,8 +60,13 @@ class MainFragment : BaseFragment(), MainView {
         )
     }
 
-    override fun populateData(overlayEnabled: Boolean, solutionType: SolutionType) {
+    override fun populateData(
+        overlayEnabled: Boolean,
+        debugMode: Boolean,
+        solutionType: SolutionType
+    ) {
         switchEnableOverlay.isChecked = overlayEnabled
+        switchDebugMode.isChecked = debugMode
         textViewCurrentSolutionType.setText(solutionType.nameResId)
 
         if (overlayEnabled) {
