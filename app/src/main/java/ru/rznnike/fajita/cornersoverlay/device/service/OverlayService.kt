@@ -18,8 +18,6 @@ import androidx.core.content.ContextCompat
 import org.koin.android.ext.android.inject
 import ru.rznnike.fajita.cornersoverlay.R
 import ru.rznnike.fajita.cornersoverlay.app.global.notifier.Notifier
-import ru.rznnike.fajita.cornersoverlay.domain.model.SolutionType
-import java.lang.Exception
 
 class OverlayService : Service() {
     private val notifier: Notifier by inject()
@@ -39,10 +37,9 @@ class OverlayService : Service() {
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         val enableOverlay = intent?.getBooleanExtra(PARAM_ENABLE_OVERLAY, false) ?: false
         val debugMode = intent?.getBooleanExtra(PARAM_DEBUG_MODE, false) ?: false
-        val solutionType = intent?.getParcelableExtra(PARAM_SOLUTION_TYPE) as? SolutionType ?: SolutionType.APPLICATION
 
         if (enableOverlay) {
-            showOverlay(debugMode, solutionType)
+            showOverlay(debugMode)
         } else {
             stopService()
         }
@@ -50,10 +47,7 @@ class OverlayService : Service() {
         return START_NOT_STICKY
     }
 
-    private fun showOverlay(
-        debugMode: Boolean,
-        solutionType: SolutionType
-    ) {
+    private fun showOverlay(debugMode: Boolean) {
         buildNotification()
 
         val windowManager = getSystemService(Context.WINDOW_SERVICE) as WindowManager
@@ -64,12 +58,7 @@ class OverlayService : Service() {
         }
 
         val params = WindowManager.LayoutParams().apply {
-            @Suppress("DEPRECATION")
-            type = if (solutionType == SolutionType.SYSTEM) {
-                WindowManager.LayoutParams.TYPE_SYSTEM_OVERLAY
-            } else {
-                WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY
-            }
+            type = WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY
             flags = (WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
                     or WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
                     or WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN)
@@ -92,12 +81,7 @@ class OverlayService : Service() {
         try {
             windowManager.addView(overlayView, params)
         } catch (e: Exception) {
-            if (solutionType == SolutionType.SYSTEM) {
-                notifier.sendMessage(R.string.error_app_not_system)
-            } else {
-                notifier.sendMessage(R.string.error_unknown)
-            }
-
+            notifier.sendMessage(R.string.error_unknown)
             Handler().postDelayed(::stopService, 1000)
         }
     }
@@ -166,7 +150,6 @@ class OverlayService : Service() {
     companion object {
         const val PARAM_ENABLE_OVERLAY = "PARAM_ENABLE_OVERLAY"
         const val PARAM_DEBUG_MODE = "PARAM_DEBUG_MODE"
-        const val PARAM_SOLUTION_TYPE = "PARAM_SOLUTION_TYPE"
 
         private const val NOTIFICATION_ID = 101
         private const val NOTIFICATION_CHANNEL_ID = "6TCornersOverlay"

@@ -9,7 +9,6 @@
     <string name="hide_rainbow_pixels">Hide rainbow pixels</string>
     <string name="overlay_type">Overlay type:</string>
     <string name="solution_application">Application</string>
-    <string name="solution_system">System</string>
     <string name="solution_accessibility">Accessibility</string>
     <string name="debug_mode">Debug mode</string>
     <string name="error_unknown">Unknown error</string>

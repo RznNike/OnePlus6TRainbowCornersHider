@@ -3,7 +3,6 @@ package ru.rznnike.fajita.cornersoverlay.app.ui.fragment.main
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.os.Parcelable
 import android.provider.Settings
 import android.view.View
 import androidx.core.os.bundleOf
@@ -119,7 +118,6 @@ class MainFragment : BaseFragment(), MainView {
         val intent = Intent(requireContext(), OverlayService::class.java)
         intent.putExtra(OverlayService.PARAM_ENABLE_OVERLAY, overlayEnabled)
         intent.putExtra(OverlayService.PARAM_DEBUG_MODE, debugMode)
-        intent.putExtra(OverlayService.PARAM_SOLUTION_TYPE, solutionType as Parcelable)
         requireContext().startService(intent)
     }
 
