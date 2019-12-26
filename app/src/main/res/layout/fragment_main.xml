@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/container"
     android:layout_width="match_parent"
@@ -11,9 +12,8 @@
         android:id="@+id/content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:paddingStart="24dp"
-        android:paddingEnd="24dp"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        tools:ignore="UselessParent">
 
         <Space
             android:layout_width="match_parent"
@@ -36,6 +36,41 @@
             android:ellipsize="end"
             android:text="@string/hide_rainbow_pixels"
             tools:checked="false"/>
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="16dp"/>
+
+        <LinearLayout
+            android:id="@+id/buttonSolutionType"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="16dp"
+                android:textSize="16sp"
+                android:text="@string/overlay_type"/>
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/textViewCurrentSolutionType"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="16dp"
+                android:textSize="16sp"
+                android:text="@string/solution_application"/>
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="center|end"
+                android:src="@drawable/ic_dropdown"
+                app:tint="@color/colorText"
+                tools:ignore="RtlSymmetry" />
+
+        </LinearLayout>
 
         <Space
             android:layout_width="match_parent"

@@ -5,9 +5,6 @@
     public static *** i(...);
 }
 
-# com.squareup.picasso:picasso
--dontwarn com.squareup.okhttp.**
-
 -dontwarn sun.misc.Unsafe
 -dontwarn com.google.common.collect.MinMaxPriorityQueue
 -dontwarn com.google.common.util.concurrent.FuturesGetChecked**
@@ -30,24 +27,6 @@
     rx.internal.util.atomic.LinkedQueueNode  producerNode;
     rx.internal.util.atomic.LinkedQueueNode  consumerNode;
 }
-
-# com.squareup.retrofit2:retrofit
--dontwarn okio.**
--dontwarn javax.annotation.**
--dontwarn retrofit2.Platform$Java8
--dontwarn retrofit2.**
--keep class retrofit2.** { *; }
--keepattributes Signature
--keepattributes Exceptions
--keepclasseswithmembers class * {
-    @retrofit2.http.* <methods>;
-}
-
-# com.squareup.okhttp3:okhttp
--dontwarn okhttp3.**
--dontwarn okio.**
--dontwarn javax.annotation.**
--keepnames class okhttp3.internal.publicsuffix.PublicSuffixDatabase
 
 # other
 -keep public class * extends java.lang.Exception

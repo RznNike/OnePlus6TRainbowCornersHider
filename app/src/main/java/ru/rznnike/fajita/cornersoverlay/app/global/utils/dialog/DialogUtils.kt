@@ -4,7 +4,19 @@ import android.content.Context
 import android.view.View
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.AppCompatTextView
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.mikepenz.fastadapter.ClickListener
+import com.mikepenz.fastadapter.FastAdapter
+import com.mikepenz.fastadapter.IAdapter
+import com.mikepenz.fastadapter.IItem
+import com.mikepenz.fastadapter.adapters.ItemAdapter
 import ru.rznnike.fajita.cornersoverlay.R
+import ru.rznnike.fajita.cornersoverlay.app.global.ui.EmptyDividerDecoration
+import ru.rznnike.fajita.cornersoverlay.app.global.utils.createFastAdapter
+import ru.rznnike.fajita.cornersoverlay.app.ui.item.BottomDialogButtonItem
 
 fun Context.showAlertDialog(
     type: AlertDialogType,
@@ -48,4 +60,59 @@ fun Context.showAlertDialog(
     }
 
     alertDialog.show()
+}
+
+fun Context.showBottomDialog(
+    cancellable: Boolean = true,
+    onCancelListener: (() -> Unit)? = null,
+    actions: List<BottomDialogAction>
+) {
+    val bottomSheetDialog = BottomSheetDialog(this, R.style.CustomBottomSheetDialog)
+    val rootView = View.inflate(this, R.layout.bottom_dialog, null)
+
+    val recyclerView: RecyclerView = rootView.findViewById(R.id.recyclerViewDialog)
+    val itemAdapter: ItemAdapter<BottomDialogButtonItem> = ItemAdapter()
+    val adapterActions: FastAdapter<IItem<*>> = createFastAdapter(itemAdapter)
+    adapterActions.setHasStableIds(true)
+    adapterActions.onClickListener = object : ClickListener<IItem<*>> {
+        override fun invoke(v: View?, adapter: IAdapter<IItem<*>>, item: IItem<*>, position: Int): Boolean {
+            return if (item is BottomDialogButtonItem) {
+                item.bottomDialogAction.callback.invoke(bottomSheetDialog)
+                true
+            } else {
+                false
+            }
+        }
+    }
+    recyclerView.apply {
+        layoutManager = LinearLayoutManager(context)
+        adapter = adapterActions
+        itemAnimator = null
+        addItemDecoration(EmptyDividerDecoration(this@showBottomDialog, R.dimen.baseline_grid_medium, false))
+    }
+    itemAdapter.setNewList(actions.map { BottomDialogButtonItem(it) })
+
+    rootView.setOnClickListener { bottomSheetDialog.cancel() }
+
+    bottomSheetDialog.setContentView(rootView)
+
+    val behavior = BottomSheetBehavior.from(rootView.parent as View)
+    behavior.state = BottomSheetBehavior.STATE_EXPANDED
+    behavior.skipCollapsed = true
+    behavior.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
+        override fun onStateChanged(view: View, state: Int) {
+            if (state == BottomSheetBehavior.STATE_HIDDEN) {
+                bottomSheetDialog.cancel()
+            }
+        }
+
+        override fun onSlide(view: View, v: Float) {}
+    })
+
+    bottomSheetDialog.setCancelable(cancellable)
+    bottomSheetDialog.setOnCancelListener {
+        onCancelListener?.invoke()
+    }
+
+    bottomSheetDialog.show()
 }

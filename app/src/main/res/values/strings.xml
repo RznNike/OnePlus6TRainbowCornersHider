@@ -7,4 +7,8 @@
     <string name="overlay_permission_denied_message">App needs overlay permission for displaying black frame above rainbow pixels in corners.</string>
     <string name="settings">Settings</string>
     <string name="hide_rainbow_pixels">Hide rainbow pixels</string>
+    <string name="overlay_type">Overlay type:</string>
+    <string name="solution_application">Application</string>
+    <string name="solution_system">System</string>
+    <string name="solution_accessibility">Accessibility</string>
 </resources>

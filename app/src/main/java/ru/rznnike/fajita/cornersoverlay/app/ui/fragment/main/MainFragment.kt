@@ -14,9 +14,12 @@ import ru.rznnike.fajita.cornersoverlay.R
 import ru.rznnike.fajita.cornersoverlay.app.global.notifier.Notifier
 import ru.rznnike.fajita.cornersoverlay.app.global.ui.TopBottomWindowInsetsListener
 import ru.rznnike.fajita.cornersoverlay.app.global.ui.fragment.BaseFragment
+import ru.rznnike.fajita.cornersoverlay.app.global.utils.dialog.BottomDialogAction
+import ru.rznnike.fajita.cornersoverlay.app.global.utils.dialog.showBottomDialog
 import ru.rznnike.fajita.cornersoverlay.app.presentation.main.MainPresenter
 import ru.rznnike.fajita.cornersoverlay.app.presentation.main.MainView
 import ru.rznnike.fajita.cornersoverlay.device.service.OverlayService
+import ru.rznnike.fajita.cornersoverlay.domain.model.SolutionType
 import java.util.*
 
 class MainFragment : BaseFragment(), MainView {
@@ -39,6 +42,9 @@ class MainFragment : BaseFragment(), MainView {
         switchEnableOverlay.setOnClickListener {
             presenter.onSwitchEnableOverlay(switchEnableOverlay.isChecked)
         }
+        buttonSolutionType.setOnClickListener {
+            showSolutionTypeSelectionBottomDialog()
+        }
     }
 
     private fun initVersionView() {
@@ -51,8 +57,9 @@ class MainFragment : BaseFragment(), MainView {
         )
     }
 
-    override fun populateData(overlayEnabled: Boolean) {
+    override fun populateData(overlayEnabled: Boolean, solutionType: SolutionType) {
         switchEnableOverlay.isChecked = overlayEnabled
+        textViewCurrentSolutionType.setText(solutionType.nameResId)
 
         if (overlayEnabled) {
             checkOverlayPermission()
@@ -96,6 +103,22 @@ class MainFragment : BaseFragment(), MainView {
         val intent = Intent(requireContext(), OverlayService::class.java)
         intent.putExtra(OverlayService.PARAM_ENABLE_OVERLAY, overlayEnabled)
         requireContext().startService(intent)
+    }
+
+    private fun showSolutionTypeSelectionBottomDialog() {
+        val currentSelection = presenter.getCurrentSolutionType()
+        requireContext().showBottomDialog(
+            actions = SolutionType.values().map { type ->
+                BottomDialogAction(
+                    text = getString(type.nameResId),
+                    callback = {
+                        presenter.onSolutionTypeValueChanged(type)
+                        it.cancel()
+                    },
+                    selected = type == currentSelection
+                )
+            }
+        )
     }
 
     companion object {

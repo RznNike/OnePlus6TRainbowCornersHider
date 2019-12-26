@@ -7,4 +7,8 @@
     <string name="overlay_permission_denied_message">Приложению требуется разрешение на показ оверлея чтобы наложить черную рамку поверх радужных пикселей по углам.</string>
     <string name="settings">Настройки</string>
     <string name="hide_rainbow_pixels">Скрыть радужные пиксели</string>
+    <string name="overlay_type">Тип оверлея:</string>
+    <string name="solution_application">Приложение</string>
+    <string name="solution_system">Система</string>
+    <string name="solution_accessibility">Спец. возможности</string>
 </resources>
