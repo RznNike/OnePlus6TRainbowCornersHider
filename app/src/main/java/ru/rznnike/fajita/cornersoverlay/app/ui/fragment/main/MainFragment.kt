@@ -70,18 +70,15 @@ class MainFragment : BaseFragment(), MainView {
         textViewCurrentSolutionType.setText(solutionType.nameResId)
 
         if (overlayEnabled) {
-            checkOverlayPermission(debugMode, solutionType)
+            checkOverlayPermission()
         } else {
-            sendCommandToOverlayService(overlayEnabled, debugMode, solutionType)
+            sendCommandToOverlayService()
         }
     }
 
-    private fun checkOverlayPermission(
-        debugMode: Boolean,
-        solutionType: SolutionType
-    ) {
+    private fun checkOverlayPermission() {
         if (Settings.canDrawOverlays(requireContext())) {
-            sendCommandToOverlayService(true, debugMode, solutionType)
+            sendCommandToOverlayService()
         } else {
             requestOverlayPermission()
         }
@@ -110,15 +107,9 @@ class MainFragment : BaseFragment(), MainView {
         }
     }
 
-    private fun sendCommandToOverlayService(
-        overlayEnabled: Boolean,
-        debugMode: Boolean,
-        solutionType: SolutionType
-    ) {
+    private fun sendCommandToOverlayService() {
         val intent = Intent(requireContext(), OverlayService::class.java)
-        intent.putExtra(OverlayService.PARAM_ENABLE_OVERLAY, overlayEnabled)
-        intent.putExtra(OverlayService.PARAM_DEBUG_MODE, debugMode)
-        requireContext().startService(intent)
+        requireContext().startForegroundService(intent)
     }
 
     private fun showSolutionTypeSelectionBottomDialog() {

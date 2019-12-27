@@ -20,9 +20,11 @@ import org.koin.android.ext.android.inject
 import ru.rznnike.fajita.cornersoverlay.R
 import ru.rznnike.fajita.cornersoverlay.app.global.notifier.Notifier
 import ru.rznnike.fajita.cornersoverlay.app.ui.AppActivity
+import ru.rznnike.fajita.cornersoverlay.data.preference.Preferences
 
 class OverlayService : Service() {
     private val notifier: Notifier by inject()
+    private val preferences: Preferences by inject()
 
     private val binder = LocalBinder()
     private var overlayView: View? = null
@@ -38,8 +40,8 @@ class OverlayService : Service() {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        val enableOverlay = intent?.getBooleanExtra(PARAM_ENABLE_OVERLAY, false) ?: false
-        val debugMode = intent?.getBooleanExtra(PARAM_DEBUG_MODE, false) ?: false
+        val enableOverlay = preferences.getOverlayEnabledPreference().get()
+        val debugMode = preferences.getDebugModePreference().get()
 
         if (enableOverlay) {
             showOverlay(debugMode)
@@ -177,9 +179,6 @@ class OverlayService : Service() {
     }
 
     companion object {
-        const val PARAM_ENABLE_OVERLAY = "PARAM_ENABLE_OVERLAY"
-        const val PARAM_DEBUG_MODE = "PARAM_DEBUG_MODE"
-
         private const val NOTIFICATION_ID = 101
         private const val NOTIFICATION_CHANNEL_ID = "6TCornersOverlay"
         private const val NOTIFICATION_CHANNEL_NAME = "6TCornersOverlay"
