@@ -8,7 +8,6 @@ import android.content.res.Configuration
 import android.graphics.PixelFormat
 import android.graphics.Point
 import android.os.Binder
-import android.os.Handler
 import android.os.IBinder
 import android.view.Gravity
 import android.view.View
@@ -121,15 +120,13 @@ class OverlayService : Service() {
     }
 
     private fun stopService() {
-        Handler().postDelayed({
-            overlayView?.let {
-                val windowManager = getSystemService(Context.WINDOW_SERVICE) as WindowManager
-                windowManager.removeView(overlayView)
-                overlayView = null
-            }
-            stopForeground(true)
-            stopSelf()
-        }, 1000)
+        overlayView?.let {
+            val windowManager = getSystemService(Context.WINDOW_SERVICE) as WindowManager
+            windowManager.removeView(overlayView)
+            overlayView = null
+        }
+        stopForeground(true)
+        stopSelf()
     }
 
     private fun buildNotification() {
