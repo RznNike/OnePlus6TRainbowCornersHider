@@ -20,6 +20,7 @@ import ru.rznnike.fajita.cornersoverlay.app.presentation.main.MainPresenter
 import ru.rznnike.fajita.cornersoverlay.app.presentation.main.MainView
 import ru.rznnike.fajita.cornersoverlay.device.service.OverlayService
 import ru.rznnike.fajita.cornersoverlay.domain.model.SolutionType
+import java.lang.Exception
 import java.util.*
 
 class MainFragment : BaseFragment(), MainView {
@@ -108,8 +109,13 @@ class MainFragment : BaseFragment(), MainView {
     }
 
     private fun sendCommandToOverlayService() {
-        val intent = Intent(requireContext(), OverlayService::class.java)
-        requireContext().startForegroundService(intent)
+        val serviceIntent = Intent(requireContext(), OverlayService::class.java)
+        try {
+            requireContext().startService(serviceIntent)
+        } catch (e: Exception) {
+            serviceIntent.putExtra(OverlayService.PARAM_SHOW_NOTIFICATION_ANYWAY, true)
+            requireContext().startForegroundService(serviceIntent)
+        }
     }
 
     private fun showSolutionTypeSelectionBottomDialog() {

@@ -43,6 +43,10 @@ class OverlayService : Service() {
         val enableOverlay = preferences.getOverlayEnabledPreference().get()
         val debugMode = preferences.getDebugModePreference().get()
 
+        val showNotificationAnyway = intent?.getBooleanExtra(PARAM_SHOW_NOTIFICATION_ANYWAY, false) ?: false
+        if (enableOverlay || showNotificationAnyway) {
+            buildNotification()
+        }
         if (enableOverlay) {
             showOverlay(debugMode)
         } else {
@@ -54,8 +58,6 @@ class OverlayService : Service() {
 
     @SuppressLint("RtlHardcoded")
     private fun showOverlay(debugMode: Boolean) {
-        buildNotification()
-
         val windowManager = getSystemService(Context.WINDOW_SERVICE) as WindowManager
         windowManager.defaultDisplay.getRealSize(screenSize)
 
@@ -93,7 +95,7 @@ class OverlayService : Service() {
             windowManager.addView(overlayView, params)
         } catch (e: Exception) {
             notifier.sendMessage(R.string.error_unknown)
-            Handler().postDelayed(::stopService, 1000)
+            stopService()
         }
     }
 
@@ -119,13 +121,15 @@ class OverlayService : Service() {
     }
 
     private fun stopService() {
-        overlayView?.let {
-            val windowManager = getSystemService(Context.WINDOW_SERVICE) as WindowManager
-            windowManager.removeView(overlayView)
-            overlayView = null
-        }
-        stopForeground(true)
-        stopSelf()
+        Handler().postDelayed({
+            overlayView?.let {
+                val windowManager = getSystemService(Context.WINDOW_SERVICE) as WindowManager
+                windowManager.removeView(overlayView)
+                overlayView = null
+            }
+            stopForeground(true)
+            stopSelf()
+        }, 1000)
     }
 
     private fun buildNotification() {
@@ -179,6 +183,8 @@ class OverlayService : Service() {
     }
 
     companion object {
+        const val PARAM_SHOW_NOTIFICATION_ANYWAY = "PARAM_SHOW_NOTIFICATION_ANYWAY"
+
         private const val NOTIFICATION_ID = 101
         private const val NOTIFICATION_CHANNEL_ID = "6TCornersOverlay"
         private const val NOTIFICATION_CHANNEL_NAME = "6TCornersOverlay"
