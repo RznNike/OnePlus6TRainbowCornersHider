@@ -1,12 +1,16 @@
 package ru.rznnike.fajita.cornersoverlay.device.service
 
+import android.annotation.SuppressLint
 import android.app.*
 import android.content.Context
 import android.content.Intent
+import android.content.res.Configuration
 import android.graphics.PixelFormat
+import android.graphics.Point
 import android.os.Binder
 import android.os.Handler
 import android.os.IBinder
+import android.view.Gravity
 import android.view.View
 import android.view.WindowManager
 import androidx.appcompat.widget.AppCompatImageView
@@ -17,12 +21,12 @@ import ru.rznnike.fajita.cornersoverlay.R
 import ru.rznnike.fajita.cornersoverlay.app.global.notifier.Notifier
 import ru.rznnike.fajita.cornersoverlay.app.ui.AppActivity
 
-
 class OverlayService : Service() {
     private val notifier: Notifier by inject()
 
     private val binder = LocalBinder()
     private var overlayView: View? = null
+    private val screenSize = Point()
 
     override fun onBind(intent: Intent?): IBinder? {
         return binder
@@ -46,10 +50,12 @@ class OverlayService : Service() {
         return START_NOT_STICKY
     }
 
+    @SuppressLint("RtlHardcoded")
     private fun showOverlay(debugMode: Boolean) {
         buildNotification()
 
         val windowManager = getSystemService(Context.WINDOW_SERVICE) as WindowManager
+        windowManager.defaultDisplay.getRealSize(screenSize)
 
         overlayView?.let {
             windowManager.removeView(overlayView)
@@ -60,9 +66,13 @@ class OverlayService : Service() {
             type = WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY
             flags = (WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
                     or WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
-                    or WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN)
+                    or WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
+                    or WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
             format = PixelFormat.TRANSLUCENT
             layoutInDisplayCutoutMode = WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES
+            gravity = Gravity.TOP or Gravity.LEFT
+            width = screenSize.x
+            height = screenSize.y
         }
 
         overlayView = View.inflate(this, R.layout.overlay, null)
@@ -83,6 +93,22 @@ class OverlayService : Service() {
             notifier.sendMessage(R.string.error_unknown)
             Handler().postDelayed(::stopService, 1000)
         }
+    }
+
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+
+        val windowManager = getSystemService(Context.WINDOW_SERVICE) as WindowManager
+        val orientation = newConfig.orientation
+        if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+            overlayView?.layoutParams?.width = screenSize.x
+            overlayView?.layoutParams?.height = screenSize.y
+        } else {
+            overlayView?.layoutParams?.width = screenSize.y
+            overlayView?.layoutParams?.height = screenSize.x
+        }
+        windowManager.removeView(overlayView)
+        windowManager.addView(overlayView, overlayView?.layoutParams)
     }
 
     override fun onDestroy() {
